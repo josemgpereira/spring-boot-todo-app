@@ -1,0 +1,12 @@
+.error {
+    color: red;
+}
+
+#todocontainer {
+    margin-top: 50px;
+}
+
+.welcome {
+    padding-top: 30px;
+    padding-bottom: 20px
+}

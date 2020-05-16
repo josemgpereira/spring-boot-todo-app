@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title th:text="#{app.title}"></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+</head>
+<body>
+    <section id="header">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand mx-auto" href="#">TODOS</a>
+            <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                    class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </nav>
+    </section>
+    <section id="todocontainer">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Todo</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Update</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="todo : ${todos}">
+                        <th scope="row" th:text=${todo.id}></th>
+                        <td th:text=${todo.todoItem}></td>
+                        <td th:text=${todo.completed}></td>
+                        <td>
+                            <form enctype="multipart/form-data" method="POST"
+                                  th:action="@{/todoUpdate/{id}(id=${todo.id})}">
+                                <div class="form-group">
+                                    <button class="btn btn-success btn-sm text-white" type="submit">Update</button>
+                                </div>
+                            </form>
+                        </td>
+                        <td>
+                            <form enctype="multipart/form-data" method="POST"
+                                  th:action="@{/todoDelete/{id}(id=${todo.id})}">
+                                <div class="form-group">
+                                    <button class="btn btn-danger btn-sm text-white" type="submit">Delete</button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-center">
+                    <a class="btn btn-success btn-lg text-white" data-target="#viewModal" data-toggle="modal">Add New Todo</a>
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+
+        <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="viewModal" role="dialog" tabindex="-1" th:fragment="modalContents">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">TODO</h5>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form enctype="multipart/form-data" method="POST" th:action="@{/todoNew}" th:object="${todo}">
+                            <div class="form-group">
+                                <label for="todoItem">Todo</label>
+                                <input aria-describedby="emailHelp" class="form-control" name="todoItem" id="todoItem" placeholder="Enter Todo" type="text" th:field="*{todoItem}"/>
+                                <!--<label for="todoItem" th:class="'error'" th:if="${#fields.hasErrors('todoItem')}" th:errors="*{todoItem}"></label>-->
+                                <label for="todoItem" th:class="'error'" th:if="${#fields.hasErrors('todoItem')}" th:text="#{error.todoItem}"></label>
+                            </div>
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <select class="form-control" name="status" id="status" th:field="*{completed}">
+                                    <option th:text="Yes" th:value="Yes"></option>
+                                    <option th:text="No" th:value="No"></option>
+                                </select>
+                            </div>
+                            <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
+                            <button class="btn btn-primary" type="submit">Add Todo</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(window).on('load', function () {
+            var hasErrors = "[[${hasErrors}]]";
+            if (hasErrors)
+                $('#viewModal').modal('show');
+        });
+    </script>
+</body>
+</html>
